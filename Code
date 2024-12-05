@@ -1,0 +1,86 @@
+Adjusting the label formatting for the BookingSystem class to ensure compatibility
+# Install necessary libraries before running the script
+
+# For GUI creation
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import filedialog
+
+
+uml = Digraph("AdventureLandTicketSystem", format="png")
+uml.attr(rankdir="LR", size="10")
+
+# Define User class
+uml.node("User", '''User|
+- username: String\\l
+- password: String\\l
+- email: String\\l
++ createAccount(): void\\l
++ login(): bool\\l
++ viewPurchaseHistory(): void\\l''', shape="record")
+
+# Define Order class
+uml.node("Order", '''Order|
+- orderId: int\\l
+- totalAmount: float\\l
+- orderDate: Date\\l
++ addTicket(ticket): void\\l
++ processPayment(): bool\\l''', shape="record")
+
+# Define Payment class
+uml.node("Payment", '''Payment|
+- paymentId: int\\l
+- paymentType: String\\l
+- amount: float\\l
++ processPayment(): bool\\l''', shape="record")
+
+# Define Ticket abstract class
+uml.node("Ticket", '''<Ticket>|
+- ticketId: int\\l
+- price: float\\l
+- validity: String\\l
++ calculateDiscount(): float\\l''', shape="record")
+
+# Define SingleDayPass class
+uml.node("SingleDayPass", '''SingleDayPass|
+- limitations: String\\l''', shape="record")
+
+# Define TwoDayPass class
+uml.node("TwoDayPass", '''TwoDayPass|
+- limitations: String\\l''', shape="record")
+
+# Define AnnualMembership class
+uml.node("AnnualMembership", '''AnnualMembership|
+- renewalDiscount: float\\l''', shape="record")
+
+# Define Admin class
+uml.node("Admin", '''Admin|
+- adminId: int\\l
+- name: String\\l
++ manageDiscounts(): void\\l
++ viewSalesReport(): void\\l''', shape="record")
+
+# Define BookingSystem class
+uml.node("BookingSystem", '''BookingSystem|
+- users: List\\l
+- orders: List\\l
+- tickets: List\\l
++ addUser(): void\\l
++ manageTickets(): void\\l
++ trackSales(): void\\l''', shape="record")
+
+# Add relationships
+uml.edge("User", "Order", label="1..*", arrowhead="vee")
+uml.edge("Order", "Payment", label="1..1", arrowhead="vee", dir="forward")
+uml.edge("Order", "Ticket", label="1..*", arrowhead="vee")
+uml.edge("Ticket", "SingleDayPass", arrowhead="vee", dir="back")
+uml.edge("Ticket", "TwoDayPass", arrowhead="vee", dir="back")
+uml.edge("Ticket", "AnnualMembership", arrowhead="vee", dir="back")
+uml.edge("Admin", "BookingSystem", label="1..1", arrowhead="vee")
+uml.edge("BookingSystem", "User", label="1..*", arrowhead="vee")
+uml.edge("BookingSystem", "Order", label="1..*", arrowhead="vee")
+uml.edge("BookingSystem", "Ticket", label="1..*", arrowhead="vee")
+
+# Render the UML diagram
+uml_path = "/mnt/data/AdventureLandTicketSystem_UML"
+uml.render(uml_path, cleanup=True)
